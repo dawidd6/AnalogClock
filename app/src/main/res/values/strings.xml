@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">AnalogClock</string>
+    <string name="night_mode">Night</string>
 </resources>

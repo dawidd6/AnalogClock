@@ -12,63 +12,6 @@ import androidx.annotation.Nullable;
 import java.util.Calendar;
 
 public class AnalogClock extends View {
-    private int hour;
-    private int minute;
-    private int second;
-
-    private Paint bigCirclePaint;
-    private Paint smallCirclePaint;
-    private Paint hourTipPaint;
-    private Paint minuteTipPaint;
-    private Paint secondTipPaint;
-    private Paint bigNumberPaint;
-    private Paint smallNumberPaint;
-
-    public AnalogClock(Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-
-        bigCirclePaint = new Paint();
-        bigCirclePaint.setColor(Color.BLACK);
-        bigCirclePaint.setStyle(Paint.Style.STROKE);
-        bigCirclePaint.setStrokeWidth(10);
-        bigCirclePaint.setAntiAlias(true);
-
-        smallCirclePaint = new Paint();
-        smallCirclePaint.setColor(Color.BLACK);
-        smallCirclePaint.setStyle(Paint.Style.FILL);
-        smallCirclePaint.setAntiAlias(true);
-
-        hourTipPaint = new Paint();
-        hourTipPaint.setColor(Color.BLACK);
-        hourTipPaint.setStrokeWidth(7);
-        hourTipPaint.setAntiAlias(true);
-        hourTipPaint.setStrokeCap(Paint.Cap.ROUND);
-
-        minuteTipPaint = new Paint();
-        minuteTipPaint.setColor(Color.BLACK);
-        minuteTipPaint.setStrokeWidth(5);
-        minuteTipPaint.setAntiAlias(true);
-        minuteTipPaint.setStrokeCap(Paint.Cap.ROUND);
-
-        secondTipPaint = new Paint();
-        secondTipPaint.setColor(Color.BLACK);
-        secondTipPaint.setStrokeWidth(3);
-        secondTipPaint.setAntiAlias(true);
-        secondTipPaint.setStrokeCap(Paint.Cap.ROUND);
-
-        bigNumberPaint = new Paint();
-        bigNumberPaint.setColor(Color.BLACK);
-        bigNumberPaint.setTextSize(100);
-        bigNumberPaint.setTextAlign(Paint.Align.CENTER);
-        bigNumberPaint.setStrokeCap(Paint.Cap.ROUND);
-
-        smallNumberPaint = new Paint();
-        smallNumberPaint.setColor(Color.BLACK);
-        smallNumberPaint.setTextSize(66);
-        smallNumberPaint.setTextAlign(Paint.Align.CENTER);
-        smallNumberPaint.setStrokeCap(Paint.Cap.ROUND);
-    }
-
     private AnalogClockRealTimeThread thread;
     private class AnalogClockRealTimeThread extends Thread {
         @Override
@@ -89,6 +32,75 @@ public class AnalogClock extends View {
         }
     }
 
+    private boolean night;
+
+    private int hour;
+    private int minute;
+    private int second;
+
+    private Paint ringPaint;
+    private Paint bigCirclePaint;
+    private Paint smallCirclePaint;
+    private Paint hourTipPaint;
+    private Paint minuteTipPaint;
+    private Paint secondTipPaint;
+    private Paint bigNumberPaint;
+    private Paint smallNumberPaint;
+
+    public void init() {
+        int frontColor = night ? Color.WHITE : Color.BLACK;
+        int backColor = night ? Color.BLACK : Color.WHITE;
+
+        bigCirclePaint = new Paint();
+        bigCirclePaint.setColor(backColor);
+
+        ringPaint = new Paint();
+        ringPaint.setColor(frontColor);
+        ringPaint.setStyle(Paint.Style.STROKE);
+        ringPaint.setStrokeWidth(10);
+        ringPaint.setAntiAlias(true);
+
+        smallCirclePaint = new Paint();
+        smallCirclePaint.setColor(frontColor);
+        smallCirclePaint.setStyle(Paint.Style.FILL);
+        smallCirclePaint.setAntiAlias(true);
+
+        hourTipPaint = new Paint();
+        hourTipPaint.setColor(frontColor);
+        hourTipPaint.setStrokeWidth(7);
+        hourTipPaint.setAntiAlias(true);
+        hourTipPaint.setStrokeCap(Paint.Cap.ROUND);
+
+        minuteTipPaint = new Paint();
+        minuteTipPaint.setColor(frontColor);
+        minuteTipPaint.setStrokeWidth(5);
+        minuteTipPaint.setAntiAlias(true);
+        minuteTipPaint.setStrokeCap(Paint.Cap.ROUND);
+
+        secondTipPaint = new Paint();
+        secondTipPaint.setColor(frontColor);
+        secondTipPaint.setStrokeWidth(3);
+        secondTipPaint.setAntiAlias(true);
+        secondTipPaint.setStrokeCap(Paint.Cap.ROUND);
+
+        bigNumberPaint = new Paint();
+        bigNumberPaint.setColor(frontColor);
+        bigNumberPaint.setTextSize(100);
+        bigNumberPaint.setTextAlign(Paint.Align.CENTER);
+        bigNumberPaint.setStrokeCap(Paint.Cap.ROUND);
+
+        smallNumberPaint = new Paint();
+        smallNumberPaint.setColor(frontColor);
+        smallNumberPaint.setTextSize(66);
+        smallNumberPaint.setTextAlign(Paint.Align.CENTER);
+        smallNumberPaint.setStrokeCap(Paint.Cap.ROUND);
+    }
+
+    public AnalogClock(Context context, @Nullable AttributeSet attrs) {
+        super(context, attrs);
+        init();
+    }
+
     public void startRealTime() {
         thread = new AnalogClockRealTimeThread();
         thread.start();
@@ -105,6 +117,13 @@ public class AnalogClock extends View {
 
         Log.d("TIME", hour+":"+minute+":"+second);
 
+        invalidate();
+    }
+
+    public void setNight(boolean night) {
+        this.night = night;
+
+        init();
         invalidate();
     }
 
@@ -159,8 +178,15 @@ public class AnalogClock extends View {
         canvas.drawCircle(
                 centerX,
                 centerY,
-                bigCircleRadius - bigCirclePaint.getStrokeWidth(),
+                bigCircleRadius - ringPaint.getStrokeWidth(),
                 bigCirclePaint
+        );
+
+        canvas.drawCircle(
+                centerX,
+                centerY,
+                bigCircleRadius - ringPaint.getStrokeWidth(),
+                ringPaint
         );
 
         canvas.drawCircle(

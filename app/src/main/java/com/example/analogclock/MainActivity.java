@@ -1,11 +1,11 @@
 package com.example.analogclock;
 
-import android.os.Handler;
-import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-
-import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
     @Override
@@ -13,7 +13,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        AnalogClock clock = findViewById(R.id.clock);
+        final AnalogClock clock = findViewById(R.id.clock);
         clock.startRealTime();
+
+        Switch switchNightMode = findViewById(R.id.switchNightMode);
+        switchNightMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+               clock.setNight(isChecked);
+            }
+        });
     }
 }
