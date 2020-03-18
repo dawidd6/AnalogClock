@@ -1,11 +1,9 @@
 package com.example.analogclock;
 
-import android.view.View;
-import android.widget.Button;
+import android.os.Bundle;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import androidx.appcompat.app.AppCompatActivity;
-import android.os.Bundle;
 
 public class MainActivity extends AppCompatActivity {
     @Override
