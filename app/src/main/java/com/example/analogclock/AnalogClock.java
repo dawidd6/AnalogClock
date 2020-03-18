@@ -5,8 +5,11 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import androidx.annotation.Nullable;
+
+import java.util.Calendar;
 
 public class AnalogClock extends View {
     private int hour;
@@ -66,10 +69,41 @@ public class AnalogClock extends View {
         smallNumberPaint.setStrokeCap(Paint.Cap.ROUND);
     }
 
+    private AnalogClockRealTimeThread thread;
+    private class AnalogClockRealTimeThread extends Thread {
+        @Override
+        public void run() {
+            while(!isInterrupted() && isAlive()) {
+                try {
+                    setTime(
+                            Calendar.getInstance().get(Calendar.HOUR),
+                            Calendar.getInstance().get(Calendar.MINUTE),
+                            Calendar.getInstance().get(Calendar.SECOND)
+                    );
+                    sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    break;
+                }
+            }
+        }
+    }
+
+    public void startRealTime() {
+        thread = new AnalogClockRealTimeThread();
+        thread.start();
+    }
+
+    public void stopRealTime() {
+        thread.interrupt();
+    }
+
     public void setTime(int hour, int minute, int second) {
         this.hour = hour;
         this.minute = minute;
         this.second = second;
+
+        Log.d("TIME", hour+":"+minute+":"+second);
 
         invalidate();
     }
